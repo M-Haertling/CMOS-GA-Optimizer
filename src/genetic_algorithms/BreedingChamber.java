@@ -42,29 +42,43 @@ public class BreedingChamber {
      *
      * @param fit An array of fitness values corresponding to each of the
      * chromosomes in the array.
+     * @param store
      */
-    public void performEvolution(FitnessBlock fit) {
+    public void performEvolution(FitnessBlock fit, ConvectionStorage store) {
         //Add elite
+        addElite(fit, store);
         //Loop till population is full
-        //Perform crossover
-        //Mutate the results
-        //Add to population
+        while (store.getNumRemaining() > 0) {
+            Chromosome p1 = this.getRouletteChromosome(fit, store);
+            Chromosome p2 = this.getRouletteChromosome(fit, store);
+            Chromosome c1 = store.getChromosome();
+            Chromosome c2 = store.getChromosome();
+
+            //Perform crossover
+            this.singlePointCrossover(p1.getValues(), p2.getValues(), c1.getValues(), c2.getValues());
+
+            //Mutate the results
+            this.mutate(c1.getValues());
+            this.mutate(c2.getValues());
+        }
         //End
+
     }
 
     /**
      * Adds the elite most chromosomes to the new set. Uses numElite and
      * eliteCopies.
+     *
      * @param fit
      * @param store
      */
     public void addElite(FitnessBlock fit, ConvectionStorage store) {
         int[] elite = fit.getEliteIndexes();
-        for(int i=0; i<numElite; i++){
+        for (int i = 0; i < numElite; i++) {
             //Get the elite
             Chromosome ch = store.getHistoricalSet()[elite[i]];
             //Copy the elite
-            for(int k=0; k<eliteCopies; k++){
+            for (int k = 0; k < eliteCopies; k++) {
                 Chromosome chnew = store.getChromosome();
                 ch.copyTo(chnew);
             }
@@ -72,9 +86,9 @@ public class BreedingChamber {
     }
 
     /**
-     * Mutates the chromosome values and places them in the child chromosome. Uses mutationRate
-     * and maxPerturbation. This function will override the child array with new
-     * values.
+     * Mutates the chromosome values and places them in the child chromosome.
+     * Uses mutationRate and maxPerturbation. This function will override the
+     * child array with new values.
      *
      * @param chrom
      * @param child
@@ -83,7 +97,24 @@ public class BreedingChamber {
         for (int i = 0; i < child.length; i++) {
             if (Math.random() < mutationRate) {
                 //Mutate the data
-                child[i] += (Math.random() - Math.random()) * maxPerturbation;
+                child[i] = chrom[i] + (Math.random() - Math.random()) * maxPerturbation;
+            }else{
+                child[i] = chrom[i];
+            }
+        }
+    }
+
+    /**
+     * Mutates the chromosome values. Uses mutationRate and maxPerturbation.
+     * This function will override the child array with new values.
+     *
+     * @param chrom
+     */
+    public void mutate(double[] chrom) {
+        for (int i = 0; i < chrom.length; i++) {
+            if (Math.random() < mutationRate) {
+                //Mutate the data
+                chrom[i] += (Math.random() - Math.random()) * maxPerturbation;
             }
         }
     }
@@ -102,7 +133,7 @@ public class BreedingChamber {
     public void singlePointCrossover(double[] chrom1, double[] chrom2, double[] child1, double[] child2) {
         if (Math.random() < crossoverRate) {
             //Choose the crossover point
-            int point = (int) (Math.random() * chrom1.length);
+            int point = (int) (Math.random() * (chrom1.length - 2)) + 1;
             //Perform the crossover
             //Copy up to the crossover point
             for (int i = 0; i < point; i++) {
@@ -121,6 +152,18 @@ public class BreedingChamber {
                 child2[i] = chrom2[i];
             }
         }
+    }
+
+    /**
+     * A convenience method for returning a chromosome from a
+     * ConvectionStroage's historical set.
+     *
+     * @param fit
+     * @param store
+     * @return A chromosome from the ConvectionStroage's historical set.
+     */
+    public Chromosome getRouletteChromosome(FitnessBlock fit, ConvectionStorage store) {
+        return store.getHistoricalSet()[this.getRouletteChromosome(fit)];
     }
 
     /**
@@ -145,8 +188,7 @@ public class BreedingChamber {
      */
     private int rouletteBinarySearch(double target, double[] sums) {
         //Start in the center of the array
-        int centerIndex = (int) (sums[sums.length - 1] / 2);
-        return rouletteBinarySearch(target, sums, centerIndex);
+        return rouletteBinarySearch(target, sums, 0, sums.length - 1);
     }
 
     /**
@@ -158,20 +200,26 @@ public class BreedingChamber {
      * @param pindex The current index.
      * @return The index of the largest sum less than the target value.
      */
-    private int rouletteBinarySearch(double target, double[] sums, int index) {
-        //Base Case Logic: if (index == sums.length-1 || (sums[index] < target && sums[index + 1] > target))
-        if (sums[index] < target) {
-            //Base case
-            if (index == sums.length - 1 || sums[index + 1] > target) {
-                return index;
+    private int rouletteBinarySearch(double target, double[] sums, int indexL, int indexH) {
+        //Base Case Logic: if sums[index] < target 
+        //  -> if at end of array return index 
+        //  -> if next sum is greater than target return index
+        //Base Case Logic: if sums[index] < target
+        //  -> if index == 0 return index
+        int center = (indexL + indexH) / 2;
+        if (sums[center] < target) {
+            if (sums[center + 1] > target) {
+                return center + 1;
             }
             //Go forward
-            return rouletteBinarySearch(target, sums, (int) ((index + sums.length) / 2));
+            return rouletteBinarySearch(target, sums, center, indexH);
         } else {
+            if (center == 0) {
+                return center;
+            }
             //Go backward
-            return rouletteBinarySearch(target, sums, (int) (index / 2));
+            return rouletteBinarySearch(target, sums, indexL, center);
         }
     }
 
-    
 }

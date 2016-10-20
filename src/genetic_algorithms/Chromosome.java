@@ -8,10 +8,10 @@ package genetic_algorithms;
  */
 public class Chromosome {
     
-    private double[] values;
-    
-    public Chromosome(){
+    private final double[] values;
         
+    public Chromosome(double[] v){
+        values = v;
     }
     
     /**
