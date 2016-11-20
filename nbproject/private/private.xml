@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/Chromosome.java</file>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/FileObject.java</file>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/ConvectionStorage.java</file>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/ChromosomeFactory.java</file>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/BreedingChamber.java</file>
-            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/IndependentStudy/src/genetic_algorithms/FitnessBlock.java</file>
+            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/CMOS-GA-Optimizer/src/genetic_algorithms/test/SAGAMutateTest.java</file>
+            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/CMOS-GA-Optimizer/src/genetic_algorithms/operations/OperationGroup.java</file>
+            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/CMOS-GA-Optimizer/src/genetic_algorithms/test/BreedingChamberTest.java</file>
+            <file>file:/C:/Users/Michael/Documents/NetBeansProjects/CMOS-GA-Optimizer/src/genetic_algorithms/test/OperationGroupTest.java</file>
         </group>
     </open-files>
 </project-private>
